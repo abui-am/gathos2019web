@@ -82,27 +82,9 @@ export class SignIn extends React.PureComponent {
     const { nama, sekolah, daerah, no_wa } = this.state;
     const data = { nama, sekolah, daerah, no_wa };
     this.setState({ isSubmiting: true });
-    setTimeout(
-      () =>
-        axios
-          .post('http://localhost:3000/siswa', data, {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json'
-            }
-          })
-          .then(res => {
-            if (res) {
-              console.log(res);
-              this.dataUploaded();
-            }
-          })
-          .catch(err => {
-            console.log(err);
-            this.dataNotUploaded();
-          }),
-      2000
-    );
+    !this.props.isError
+      ? setTimeout(this.dataUploaded, 2000)
+      : setTimeout(this.dataNotUploaded, 2000);
   };
 
   resetState = () => {
@@ -124,7 +106,10 @@ export class SignIn extends React.PureComponent {
   };
 
   dataNotUploaded = () => {
-    this.setState({ isSuccess: true, status: 'Data tidak berhasil dikirim' });
+    this.setState({
+      isSuccess: true,
+      status: 'Data gagal dikirim, mohon cek koneksi web ke server :('
+    });
     setTimeout(this.resetState, 3000);
   };
 
