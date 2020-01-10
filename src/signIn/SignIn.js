@@ -94,11 +94,14 @@ export class SignIn extends React.PureComponent {
           .then(res => {
             if (res) {
               console.log(res);
-              this.resetState();
+              this.dataUploaded();
             }
           })
-          .catch(err => console.log(err)),
-      3000
+          .catch(err => {
+            console.log(err);
+            this.dataNotUploaded();
+          }),
+      2000
     );
   };
 
@@ -109,8 +112,20 @@ export class SignIn extends React.PureComponent {
       nama: '',
       sekolah: '',
       daerah: '',
-      no_wa: ''
+      no_wa: '',
+      isSuccess: false,
+      status: ''
     });
+  };
+
+  dataUploaded = () => {
+    this.setState({ isSuccess: true, status: 'Data berhasil dikirim' });
+    setTimeout(this.resetState, 1000);
+  };
+
+  dataNotUploaded = () => {
+    this.setState({ isSuccess: true, status: 'Data tidak berhasil dikirim' });
+    setTimeout(this.resetState, 3000);
   };
 
   updateDimensions = () => {
@@ -296,7 +311,7 @@ export class SignIn extends React.PureComponent {
                       </Grow>
                     </form>
                   </Container>
-                ) : (
+                ) : !this.state.isSuccess ? (
                   <Container maxWidth="xs" alignItems="center">
                     <Grow in={this.state.isSubmiting}>
                       <Grid direction="column">
@@ -320,7 +335,7 @@ export class SignIn extends React.PureComponent {
                         <Typography
                           style={{ marginTop: '20px', textAlign: 'center' }}
                         >
-                          Terimakasih sudah daftar ulang, Silahkan masuk :)
+                          Memproses...., tunggu sebentar yak :)
                         </Typography>
                         <Typography
                           style={{ marginTop: '20px', textAlign: 'center' }}
@@ -330,6 +345,25 @@ export class SignIn extends React.PureComponent {
                       </Grid>
                     </Grow>
                   </Container>
+                ) : (
+                  <div>
+                    <Fade in={this.state.status}>
+                      <Typography
+                        variant="h5"
+                        container="h1"
+                        style={{ textAlign: 'center', fontWeight: '400' }}
+                      >
+                        {this.state.status}
+                      </Typography>
+                    </Fade>
+                    <Fade in={this.state.status === 'Data berhasil dikirim'}>
+                      <Typography
+                        style={{ textAlign: 'center', fontWeight: '400' }}
+                      >
+                        Silahkan masuk
+                      </Typography>
+                    </Fade>
+                  </div>
                 )}
               </Grid>
             </Grid>
